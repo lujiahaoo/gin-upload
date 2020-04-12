@@ -79,10 +79,9 @@ func UploadImage(ctx *gin.Context) ([]string, error) {
 	//监听任务主动结束或超时
 	select {
 	case <-time.After(time.Second * 5):
-		close(fileNameCh)
-		close(finishCh)
 		return nil, errors.New("超时")
 	case <-finishCh:
+		close(finishCh)
 		return arr, nil
 	}
 }
