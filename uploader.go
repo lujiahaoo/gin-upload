@@ -30,7 +30,7 @@ var (
 	maxWidthThum  = uint(300)
 	maxHeightThum = uint(200)
 
-	timeout = time.Second * 5
+	timeout = time.Second * 5				//注意:这里的超时时间不包括图片从客户端发送到服务器所消耗的时间
 )
 
 func UploadImage(ctx *gin.Context) ([]string, error) {
