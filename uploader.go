@@ -1,4 +1,4 @@
-package utils
+package uploader
 
 import (
 	"errors"
@@ -18,14 +18,14 @@ import (
 )
 
 var (
-	maxFormSize = int64(27 << 20) 										//允许表单最大长度 27MiB
+	maxFormSize = int64(27 << 20) 			//允许表单最大长度 27MiB
 
-	maxImages = 9 														//允许最大上传图片数量
+	maxImages = 9 							//允许最大上传图片数量
 
 	supportImageExtNames = []string{".jpg", ".jpeg", ".png", ".gif"}    //支持的图片类型
 
-	distPath          = "./static"           							//普通图片存放根目录
-	thumbnailDistPath = "./static/thumbnail" 							//缩略图片存放目录
+	distPath          = "./static"           //普通图片存放根目录
+	thumbnailDistPath = "./static/thumbnail" //缩略图片存放目录
 
 	maxWidthThum  = uint(300)
 	maxHeightThum = uint(200)
@@ -39,17 +39,16 @@ func UploadImage(ctx *gin.Context) ([]string, error) {
 		return nil, err
 	}
 
-	wg := sync.WaitGroup{}
-	finishCh := make(chan bool)
-	fileNameCh := make(chan string)
-	var arr = []string{}
-
 	fhs := ctx.Request.MultipartForm.File["image"]
-
 	length := len(fhs)
 	if length > maxImages {
 		return nil, errors.New("too many images")
 	}
+
+	wg := sync.WaitGroup{}
+	finishCh := make(chan bool)
+	fileNameCh := make(chan string)
+	var arr = []string{}
 
 	dayDir := path.Join(distPath, time.Now().Format("2006-01-02"))
 	err = os.MkdirAll(dayDir, 0777)
