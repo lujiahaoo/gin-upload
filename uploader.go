@@ -17,23 +17,16 @@ import (
 	"time"
 )
 
-var (
-	maxFormSize = int64(27 << 20) 			//允许表单最大长度 27MiB
-
-	maxImages = 9 							//允许最大上传图片数量
-
-	supportImageExtNames = []string{".jpg", ".jpeg", ".png", ".gif"}    //支持的图片类型
-
-	distPath          = "./static"           //普通图片存放根目录
-	thumbnailDistPath = "./static/thumbnail" //缩略图片存放目录
-
-	maxWidthThum  = uint(300)
-	maxHeightThum = uint(200)
-
-	timeout = time.Second * 5				//注意:这里的超时时间不包括图片从客户端发送到服务器所消耗的时间
-)
 
 func UploadImage(ctx *gin.Context) ([]string, error) {
+	var (
+		maxFormSize = int64(27 << 20) 			//允许表单最大长度 27MiB
+
+		maxImages = 9 							//允许最大上传图片数量	
+
+		timeout = time.Second * 5				//注意:这里的超时时间不包括图片从客户端发送到服务器所消耗的时间
+	)
+
 	err := ctx.Request.ParseMultipartForm(maxFormSize)
 	if err != nil {
 		return nil, err
@@ -82,6 +75,8 @@ func UploadImage(ctx *gin.Context) ([]string, error) {
 }
 
 func isAllowImage(extName string) bool {
+	supportImageExtNames := []string{".jpg", ".jpeg", ".png", ".gif"}    //支持的图片类型
+
 	for _, allowExt := range supportImageExtNames {
 		if extName == allowExt {
 			return true
@@ -126,6 +121,12 @@ func saveUploadImage(dayDir string, file *multipart.FileHeader, wg *sync.WaitGro
 
 func thumbnailify(imagePath string) error {
 	var (
+		distPath          = "./static"           //普通图片存放根目录
+		thumbnailDistPath = "./static/thumbnail" //缩略图片存放目录
+
+		maxWidthThum  = uint(300)
+		maxHeightThum = uint(200)
+
 		file     *os.File
 		img      image.Image
 		fileName = path.Base(imagePath)

@@ -5,11 +5,10 @@ import (
 	"testing"
 )
 
-var (
-	TestFileName = []string{".jpg", ".png", ".gif", ".sh", "ddd"}
-)
 
 func TestIsAllowImage(t *testing.T) {
+	TestFileName := []string{".jpg", ".png", ".gif", ".sh", "ddd"}
+
 	res := []bool{}
 	for _, v := range TestFileName {
 		res = append(res, IsAllowImage(v))
